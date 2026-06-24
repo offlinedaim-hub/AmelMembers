@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Amel VIP Member</title>
+
+<style>
+body{
+margin:0;
+font-family:Arial;
+background:#111;
+color:white;
+}
+
+header{
+background:#222;
+padding:15px;
+display:flex;
+justify-content:space-between;
+}
+
+.logo{
+color:gold;
+font-size:22px;
+font-weight:bold;
+}
+
+.cart{
+font-size:22px;
+cursor:pointer;
+}
+
+.container{
+padding:15px;
+}
+
+.card{
+background:#222;
+padding:15px;
+margin:10px 0;
+border-radius:10px;
+}
+
+button{
+padding:10px;
+border:0;
+border-radius:8px;
+cursor:pointer;
+}
+
+.btn{
+width:100%;
+background:gold;
+}
+
+#keranjang{
+display:none;
+position:fixed;
+right:10px;
+top:60px;
+width:300px;
+background:#222;
+padding:15px;
+border-radius:10px;
+z-index:5;
+max-height:80vh;
+overflow:auto;
+}
+
+.item{
+background:#333;
+padding:10px;
+margin:10px 0;
+border-radius:8px;
+}
+
+.hapus{
+background:red;
+color:white;
+}
+
+.promo{
+background:orange;
+color:white;
+width:100%;
+}
+
+.bayar{
+background:green;
+color:white;
+width:100%;
+}
+
+
+/* IKLAN */
+#popup{
+position:fixed;
+inset:0;
+background:rgba(0,0,0,.7);
+display:flex;
+justify-content:center;
+align-items:center;
+z-index:99;
+}
+
+.promoBox{
+width:220px;
+aspect-ratio:9/16;
+position:relative;
+}
+
+.promoBox img{
+width:100%;
+height:100%;
+object-fit:cover;
+border-radius:15px;
+}
+
+.close{
+position:absolute;
+right:5px;
+top:5px;
+background:red;
+color:white;
+border-radius:50%;
+}
+
+</style>
+</head>
+
+
+<body>
+
+
+<div id="popup">
+
+<div class="promoBox">
+
+<button class="close" onclick="tutup()">X</button>
+
+<img src="promo.png">
+
+</div>
+
+</div>
+
+
+
+<header>
+
+<div class="logo">
+Amel VIP
+</div>
+
+<div class="cart" onclick="buka()">
+🛒 <span id="jumlah">0</span>
+</div>
+
+</header>
+
+
+
+<div class="container">
+
+<h1>Selamat Datang di Amel VIP</h1>
+
+<p>Pilih paket berlangganan</p>
+
+
+<div class="card">
+<h3>Paket 1 Tahun</h3>
+<p>Rp350.000</p>
+<button class="btn" onclick="tambah('VIP 1 Tahun',350000)">
+Masuk Keranjang
+</button>
+</div>
+
+
+<div class="card">
+<h3>Paket 5 Bulan</h3>
+<p>Rp120.000</p>
+<button class="btn" onclick="tambah('VIP 5 Bulan',120000)">
+Masuk Keranjang
+</button>
+</div>
+
+
+<div class="card">
+<h3>Paket 1 Bulan</h3>
+<p>Rp50.000</p>
+<button class="btn" onclick="tambah('VIP 1 Bulan',50000)">
+Masuk Keranjang
+</button>
+</div>
+
+
+<div class="card">
+<h3>Paket Mingguan</h3>
+<p>Rp20.000</p>
+<button class="btn" onclick="tambah('VIP Mingguan',20000)">
+Masuk Keranjang
+</button>
+</div>
+
+
+<div class="card">
+<h3>Paket Harian</h3>
+<p>Rp10.000</p>
+<button class="btn" onclick="tambah('VIP Harian',10000)">
+Masuk Keranjang
+</button>
+</div>
+
+
+</div>
+
+
+
+<div id="keranjang">
+
+<h2>Keranjang</h2>
+
+<div id="isi"></div>
+
+<button class="promo" onclick="promo()">
+🎁 Gunakan Promo
+</button>
+
+<p id="info">
+Belum ada promo
+</p>
+
+<h3>
+Total Rp <span id="total">0</span>
+</h3>
+
+
+<button class="bayar" onclick="bayar()">
+Bayar
+</button>
+
+
+</div>
+
+
+
+<script>
+
+let cart=[];
+let diskon=0;
+let promoDipakai=false;
+
+
+
+function tutup(){
+
+document.getElementById("popup").style.display="none";
+
+}
+
+
+
+function buka(){
+
+let x=document.getElementById("keranjang");
+
+x.style.display=
+x.style.display=="block"?
+"none":"block";
+
+}
+
+
+
+function tambah(nama,harga){
+
+let cek=cart.find(x=>x.nama==nama);
+
+
+if(cek){
+
+cek.qty++;
+
+}else{
+
+cart.push({
+nama:nama,
+harga:harga,
+qty:1
+});
+
+}
+
+render();
+
+}
+
+
+
+function ubah(i,n){
+
+cart[i].qty+=n;
+
+
+if(cart[i].qty<=0){
+
+cart.splice(i,1);
+
+}
+
+render();
+
+}
+
+
+
+function hapus(i){
+
+cart.splice(i,1);
+
+render();
+
+}
+
+
+
+function promo(){
+
+if(promoDipakai){
+
+alert("Promo sudah digunakan");
+
+return;
+
+}
+
+
+let kode=prompt("Masukkan kode promo");
+
+
+if(kode=="AMELVIP"){
+
+let angka=[10,20,30,40,50];
+
+diskon=
+angka[Math.floor(Math.random()*angka.length)];
+
+promoDipakai=true;
+
+
+document.getElementById("info").innerHTML=
+"🎁 Diskon "+diskon+"% aktif";
+
+
+render();
+
+
+}else{
+
+alert("Kode promo salah");
+
+}
+
+}
+
+
+
+function render(){
+
+let html="";
+let total=0;
+let jumlah=0;
+
+
+cart.forEach((x,i)=>{
+
+
+total+=x.harga*x.qty;
+
+jumlah+=x.qty;
+
+
+html+=`
+
+<div class="item">
+
+<b>${x.nama}</b><br>
+
+Rp ${x.harga.toLocaleString('id-ID')}
+
+<br>
+
+<button onclick="ubah(${i},-1)">-</button>
+
+${x.qty}
+
+<button onclick="ubah(${i},1)">+</button>
+
+<br><br>
+
+<button class="hapus" onclick="hapus(${i})">
+Hapus
+</button>
+
+</div>
+
+`;
+
+});
+
+
+let potongan=total*diskon/100;
+
+let akhir=total-potongan;
+
+
+document.getElementById("isi").innerHTML=html;
+
+document.getElementById("jumlah").innerHTML=jumlah;
+
+document.getElementById("total").innerHTML=
+akhir.toLocaleString('id-ID');
+
+}
+
+
+
+
+function bayar(){
+
+if(cart.length==0){
+
+alert("Keranjang kosong");
+
+return;
+
+}
+
+
+let pesan=
+"Halo admin, saya mau berlangganan:%0A%0A";
+
+let total=0;
+
+
+cart.forEach(x=>{
+
+let sub=x.harga*x.qty;
+
+total+=sub;
+
+
+pesan+=
+"- "+x.nama+
+" x"+x.qty+
+" = Rp "+
+sub.toLocaleString('id-ID')+
+"%0A";
+
+});
+
+
+let potongan=total*diskon/100;
+
+let akhir=total-potongan;
+
+
+if(diskon>0){
+
+pesan+=
+"%0A🎁 Diskon: "+
+diskon+
+"%25";
+
+pesan+=
+"%0A💰 Potongan: Rp "+
+potongan.toLocaleString('id-ID');
+
+}
+
+
+pesan+=
+"%0A%0A✅ Total Bayar: Rp "+
+akhir.toLocaleString('id-ID');
+
+
+
+window.open(
+"https://t.me/Amelcrot12?text="+pesan,
+"_blank"
+);
+
+
+// reset
+
+cart=[];
+
+diskon=0;
+
+promoDipakai=false;
+
+document.getElementById("info").innerHTML=
+"Belum ada promo";
+
+render();
+
+}
+
+
+</script>
+
+</body>
+</html>
