@@ -506,13 +506,19 @@ document.getElementById("info").innerHTML=
 render();
 
 }
-let websiteLocked = true // false = buka, true = tutup
+let maintenanceTime = "14:10";
+let maintenanceEnd = "14:25";
+
+function toMinutes(time){
+  let [jam, menit] = time.split(":").map(Number);
+  return jam * 60 + menit;
+}
 
 let now = new Date();
-let maintenanceTime =
-    now.getHours().toString().padStart(2,'0') +
-    ":" +
-    now.getMinutes().toString().padStart(2,'0');
+let nowMinutes = now.getHours() * 60 + now.getMinutes();
+
+// otomatis lock / unlock
+let websiteLocked = nowMinutes < toMinutes(maintenanceEnd);
 
 if (websiteLocked) {
   document.body.innerHTML = `
@@ -532,7 +538,8 @@ if (websiteLocked) {
   ">
     <h1>🚧 MAINTENANCE</h1>
     <p>Website sedang maintenance</p>
-    <p>Jam Maintenance: ${maintenanceTime}</p>
+    <p>Maintenance Time : ${maintenancetime}</p>
+    <p>Maintenance End : ${maintenanceEnd}</p>
   </div>`;
 }
 
