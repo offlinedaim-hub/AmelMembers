@@ -507,7 +507,7 @@ render();
 
 }
 let maintenanceTime = "14:10";
-let maintenanceEnd = "14:25";
+let maintenanceEnd = "14:27";
 
 function toMinutes(time){
   let [jam, menit] = time.split(":").map(Number);
@@ -538,7 +538,7 @@ if (websiteLocked) {
   ">
     <h1>🚧 MAINTENANCE</h1>
     <p>Website sedang maintenance</p>
-    <p>Maintenance Time : ${maintenancetime}</p>
+    <p>Maintenance Time : ${maintenanceTime}</p>
     <p>Maintenance End : ${maintenanceEnd}</p>
   </div>`;
 }
